@@ -1,0 +1,15 @@
+#side Sector Scather
+	#author AgentE382
+	#date 2-23-2013
+	#seed 1
+	#color F00
+	
+	#type Starter
+	#decoration F60 triangle
+	#hardware
+	#code
+		#start
+		do
+			
+		forever
+#end
