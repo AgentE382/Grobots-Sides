@@ -4,10 +4,51 @@
 	#seed 1
 	#color F00
 	
+	#code
+		#const number-of-types 1
+		
+		#const origin-shared-memory-address 999
+		#const sector-width-shared-memory-start-address 999
+		
+		#var sector-width
+		
+		#vector origin
+		
+		set-sector-width:	; -- 	Set the sector width of a type based on how many robots of this type are alive.
+			pi 2 * type type-population / sector-width!	; Divide 2pi by the number of robots of this type, producing an angle.
+			sector-width sector-width-shared-memory-start-address type - write	; Update shared memory
+		return
+		
+		check-sector:	; target -- sector	Checks what sector a target is in, based on the origin.
+			origin v- rect-to-polar nip sector-width / ceiling	; Subtract the origin vector from the target vector, divide it by the sector width, and ceiling it for human-understandability.
+		return
+		
+		get-origin:	; -- 	Gets origin from shared memory.
+			origin-shared-memory-address vread origin!	; Get the origin from shared memory and set the variable.
+		return
+		
+		get-sector-width:	; -- 	Gets sector width from shared memory.
+			sector-width sector-width-shared-memory-start-address type - read sector-width!	; Get the sector width from shared memory and set the variable.
+		return
+		
 	#type Starter
 	#decoration F60 triangle
 	#hardware
 	#code
+		set-origin:
+			type type-population 1 > if	; Check if there are other robots of this type.
+				1 dup	; Initialize counter to 1 and duplicate to preserve counter value.
+				do vread 2dup rect-to-polar drop 0 > while	; Check if a valid vector was at the shared memory location. If not, stop looping.
+					origin v+ origin!	; Add shared memory value to variable.
+					2 + dup	; Increment counter and duplicate to preserve value.
+				loop
+				origin swap 2 / ceiling vs/ origin!	; Divide the total by the amount of times looped, producing the average and update the variable.
+			else
+				position origin!	; Origin is my position.
+			then
+			origin origin-shared-memory-address vwrite	; Update the shared memory.
+		return
+		
 		#start
 		do
 			
