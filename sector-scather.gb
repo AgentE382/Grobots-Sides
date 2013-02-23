@@ -50,6 +50,9 @@
 		return
 		
 		#start
+		set-origin
+		set-sector-width
+		
 		do
 			
 		forever
