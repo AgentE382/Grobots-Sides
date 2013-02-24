@@ -32,7 +32,7 @@
 		return
 		
 		set-location:	; -- 	Puts position in shared memory.
-			position 1 id 2 * + vwrite	; Put my position in shared memory based on my id.
+			position id 2 * 1 - vwrite	; Put my position in shared memory based on my id.
 		return
 		
 	#type Starter
@@ -47,7 +47,8 @@
 					origin v+ origin!	; Add shared memory value to variable.
 					2 + dup	; Increment counter and duplicate to preserve value.
 				loop
-				origin swap 2 / ceiling vs/ origin!	; Divide the total by the amount of times looped, producing the average and update the variable.
+				2drop
+				origin rot 2 / ceiling vs/ origin!	; Divide the total by the amount of times looped, producing the average and update the variable.
 			else
 				position origin!	; Origin is my position.
 			then
