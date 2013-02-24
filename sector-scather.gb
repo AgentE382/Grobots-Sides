@@ -31,9 +31,14 @@
 			sector-width sector-width-shared-memory-start-address type - read sector-width!	; Get the sector width from shared memory and set the variable.
 		return
 		
+		set-location:	; -- 	Puts position in shared memory.
+			position 1 id 2 * + vwrite	; Put my position in shared memory based on my id.
+		return
+		
 	#type Starter
 	#decoration F60 triangle
 	#hardware
+			processor 1
 	#code
 		set-origin:
 			type type-population 1 > if	; Check if there are other robots of this type.
@@ -50,6 +55,7 @@
 		return
 		
 		#start
+		set-location
 		set-origin
 		set-sector-width
 		
