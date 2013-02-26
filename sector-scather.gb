@@ -8,6 +8,11 @@
 		#const number-of-types 1
 		#const control-channel 1
 		
+		; Messages
+		#const sector-check 1
+		#const sector-taken 2
+		
+		; Shared Memory
 		#const origin-shared-memory-address 999
 		#const sector-width-shared-memory-start-address 999
 		
@@ -42,22 +47,8 @@
 		return
 			
 		check-sector:
-			id sector 2 control-channel send
+			id sector sector-check 3 control-channel send
 			sync
-			do control-channel receive while
-				sector = if
-					id < if
-						sector 1 + sector!
-						sector type type-population > if
-							sector type type-population - sector!
-						then
-							control-channel clear-messages
-							check-sector
-					then
-				else
-					drop
-				then
-			loop
 		return
 		
 	#type Starter
@@ -91,6 +82,31 @@
 		check-sector
 		
 		do
+			do control-channel receive while
+				dup sector-check = if
+					drop
+					dup sector = if
+						drop
+						dup id > if
+							sector-taken 2 control-channel send
+						else
+							drop
+						then
+					else
+						2drop
+					then
+				else
+					sector-taken = if
+						id = if
+							sector 1 + sector!
+							sector type type-population > if
+								sector type type-population - sector!
+							then
+							check-sector
+						then
+					then
+				then
+			loop
 			type type-population 2 / sector-width sector * sector-width 2 / - polar-to-rect origin v+ seek-location
 		forever
 #end
