@@ -6,11 +6,13 @@
 	
 	#code
 		#const number-of-types 1
+		#const control-channel 1
 		
 		#const origin-shared-memory-address 999
 		#const sector-width-shared-memory-start-address 999
 		
 		#var sector-width
+		#var sector
 		
 		#vector origin
 		
@@ -19,8 +21,12 @@
 			sector-width sector-width-shared-memory-start-address type - write	; Update shared memory
 		return
 		
-		check-sector:	; target -- sector	Checks what sector a target is in, based on the origin.
-			origin v- rect-to-polar nip sector-width / ceiling	; Subtract the origin vector from the target vector, divide it by the sector width, and ceiling it for human-understandability.
+		get-sector:	; target -- sector	Checks what sector a target is in, based on the origin.
+			origin v- rect-to-polar nip	; Subtract the origin vector from the target vector, then convert it to polar form and throw away the magnitude.
+			dup signum 0 < if	; Check if the angle is negative.
+				pi 2 * +	; Convert it to a high positive angle.
+			then
+			sector-width / ceiling	; Divide the angle by the sector width, and ceiling it for human-understandability.
 		return
 		
 		get-origin:	; -- 	Gets origin from shared memory.
@@ -31,24 +37,44 @@
 			sector-width sector-width-shared-memory-start-address type - read sector-width!	; Get the sector width from shared memory and set the variable.
 		return
 		
-		set-location:	; -- 	Puts position in shared memory.
-			position id 2 * 1 - vwrite	; Put my position in shared memory based on my id.
+		send-location:	; -- 	Puts position in shared memory.
+			position 2 control-channel send	; Put my position in shared memory based on my id.
+		return
+			
+		check-sector:
+			id sector 2 control-channel send
+			sync
+			do control-channel receive while
+				sector = if
+					id < if
+						sector 1 + sector!
+						sector type type-population <= nif
+							type type-population - sector!	; Errors sometimes.
+						then
+							control-channel clear-messages
+							check-sector
+					then
+				else
+					drop
+				then
+			loop
 		return
 		
 	#type Starter
 	#decoration F60 triangle
 	#hardware
 			processor 1
+			engine .125
+			solar-cells .125
 	#code
 		set-origin:
 			type type-population 1 > if	; Check if there are other robots of this type.
-				1 dup	; Initialize counter to 1 and duplicate to preserve counter value.
-				do vread 2dup rect-to-polar drop 0 > while	; Check if a valid vector was at the shared memory location. If not, stop looping.
+				sync
+				type type-population
+				do control-channel receive while	; Check if a valid vector was at the shared memory location. If not, stop looping.
 					origin v+ origin!	; Add shared memory value to variable.
-					2 + dup	; Increment counter and duplicate to preserve value.
 				loop
-				2drop
-				origin rot 2 / ceiling vs/ origin!	; Divide the total by the amount of times looped, producing the average and update the variable.
+				origin rot ceiling vs/ origin!	; Divide the total by the amount of times looped, producing the average and update the variable.
 			else
 				position origin!	; Origin is my position.
 			then
@@ -56,11 +82,15 @@
 		return
 		
 		#start
-		set-location
-		set-origin
+		send-location
+		get-origin origin rect-to-polar drop nif
+			set-origin
+		then
 		set-sector-width
+		position get-sector sector!
+		check-sector
 		
 		do
-			
+			type type-population 2 / sector-width sector * sector-width 2 / - polar-to-rect origin v+ seek-location
 		forever
 #end
