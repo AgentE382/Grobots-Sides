@@ -48,8 +48,8 @@
 				sector = if
 					id < if
 						sector 1 + sector!
-						sector type type-population <= nif
-							type type-population - sector!	; Errors sometimes.
+						sector type type-population > if
+							sector type type-population - sector!
 						then
 							control-channel clear-messages
 							check-sector
