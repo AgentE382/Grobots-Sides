@@ -40,7 +40,7 @@
 					control-channel receive
 					swap position-advertisement = if
 						drop
-						origin + origin!
+						origin v+ origin!
 						received-positions 1 + received-positions!
 					else
 						1 - dropn
