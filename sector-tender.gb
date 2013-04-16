@@ -1,0 +1,19 @@
+#side Sector Tender
+	#author AgentE382
+	#date 4-16-2013
+	#seed 1
+	#color 0F0
+	
+	#code
+		#const origin-address 0
+		#const origins-added-address 2
+	#type Starter
+	#decoration 6F0 circle
+	#hardware
+		
+	#code
+		
+		#start
+			origin-address vread position v+ origin-address vwrite
+			origins-added-address read 1 + origins-added-address write
+#end
