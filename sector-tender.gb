@@ -22,13 +22,13 @@
 		#vector origin
 		
 		#start
-			origin-location vread 2dup 0 > swap 0 > and if
+			origin-location vread 2dup 0 > swap 0 > and if	; if origin is already determined, skip to the end
 				origin!
-			else
+			else	; you're in the seed, figure it out
 				2drop
-				position position-advertisement position-advertisement-length control-channel send
-				id 1 = nif
-					do
+				position position-advertisement position-advertisement-length control-channel send	; send your position
+				id 1 = nif	; you're not controller
+					do	; wait for controller's origin announcement, then assign it to origin
 						control-channel receive
 						dup 0 = nif
 							swap origin-announcement = if
@@ -41,7 +41,7 @@
 							then
 						then
 					until-loop
-				else
+				else	; controller receives positions then broadcasts averaged origin and puts it in shared menory
 					do
 						control-channel receive
 						swap position-advertisement = if
@@ -52,9 +52,9 @@
 							1 - dropn
 						then
 					received-positions type type-population = until-loop
-					origin type type-population vs/ origin!
-					origin origin-announcement origin-announcement-length control-channel send
-					origin origin-location vwrite
+					origin type type-population vs/ origin!	; average origin
+					origin origin-announcement origin-announcement-length control-channel send	; send it
+					origin origin-location vwrite	; write it for offspring
 				then
-			then
+			then	; origin has been determined
 #end
