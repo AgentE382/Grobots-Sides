@@ -25,36 +25,36 @@
 			origin-location vread 2dup 0 > swap 0 > and if
 				origin!
 			else
-			2drop
-			position position-advertisement position-advertisement-length control-channel send
-			id 1 = nif
-				do
-					control-channel receive
-					dup 0 = nif
-						swap origin-announcement = if
+				2drop
+				position position-advertisement position-advertisement-length control-channel send
+				id 1 = nif
+					do
+						control-channel receive
+						dup 0 = nif
+							swap origin-announcement = if
+								drop
+								origin!
+								1
+							else
+								1 - dropn
+								0
+							then
+						then
+					until-loop
+				else
+					do
+						control-channel receive
+						swap position-advertisement = if
 							drop
-							origin!
-							1
+							origin v+ origin!
+							received-positions 1 + received-positions!
 						else
 							1 - dropn
-							0
 						then
-					then
-				until-loop
-			else
-				do
-					control-channel receive
-					swap position-advertisement = if
-						drop
-						origin v+ origin!
-						received-positions 1 + received-positions!
-					else
-						1 - dropn
-					then
-				received-positions type type-population = until-loop
-				origin type type-population vs/ origin!
-				origin origin-announcement origin-announcement-length control-channel send
-				origin origin-location vwrite
-			then
+					received-positions type type-population = until-loop
+					origin type type-population vs/ origin!
+					origin origin-announcement origin-announcement-length control-channel send
+					origin origin-location vwrite
+				then
 			then
 #end
