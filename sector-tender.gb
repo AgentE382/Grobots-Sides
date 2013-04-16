@@ -10,7 +10,7 @@
 	#type Starter
 	#decoration 6F0 circle
 	#hardware
-		
+		processor 1
 	#code
 		
 		#start
