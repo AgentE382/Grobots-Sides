@@ -10,6 +10,8 @@
 		#const position-advertisement-length 3
 		#const origin-announcement 2
 		#const origin-announcement-length 3
+		
+		#const origin-location 1
 	#type Starter
 	#decoration 6F0 circle
 	#hardware
@@ -20,6 +22,10 @@
 		#vector origin
 		
 		#start
+			origin-location vread 2dup 0 > swap 0 > and if
+				origin!
+			else
+			2drop
 			position position-advertisement position-advertisement-length control-channel send
 			id 1 = nif
 				do
@@ -48,5 +54,7 @@
 				received-positions type type-population = until-loop
 				origin type type-population vs/ origin!
 				origin origin-announcement origin-announcement-length control-channel send
+				origin origin-location vwrite
+			then
 			then
 #end
