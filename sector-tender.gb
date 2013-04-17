@@ -11,7 +11,7 @@
 		#const origin-announcement 2
 		#const origin-announcement-length 3
 		
-		#const origin-location 1
+		#const origin-address 1
 	#type Starter
 	#decoration 6F0 circle
 	#hardware
@@ -22,7 +22,7 @@
 		#vector origin
 		
 		#start
-			origin-location vread 2dup 0 > swap 0 > and if	; if origin is already determined, skip to the end
+			origin-address vread 2dup 0 > swap 0 > and if	; if origin is already determined, skip to the end
 				origin!
 			else	; you're in the seed, figure it out
 				2drop
@@ -54,7 +54,7 @@
 					received-positions type type-population = until-loop
 					origin type type-population vs/ origin!	; average origin
 					origin origin-announcement origin-announcement-length control-channel send	; send it
-					origin origin-location vwrite	; write it for offspring
+					origin origin-address vwrite	; write it for offspring
 				then
 			then	; origin has been determined
 #end
