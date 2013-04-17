@@ -20,6 +20,10 @@
 	#code
 		#var received-positions
 		#vector origin
+		#var sector
+		#var sector-width
+		
+		#const sector-width-address 3
 		
 		#start
 			origin-address vread 2dup 0 > swap 0 > and if	; if origin is already determined, skip to the end
@@ -57,4 +61,18 @@
 					origin origin-address vwrite	; write it for offspring
 				then
 			then	; origin has been determined
+			
+			; check what sector you're in, based on the origin
+			position origin v- rect-to-polar nip	; Subtract the origin vector from the target vector, then convert it to polar form and throw away the magnitude.
+			dup signum 0 < if	; Check if the angle is negative.
+				pi 2 * +	; Convert it to a high positive angle.
+			then
+			sector-width-address read dup nif
+				drop
+				pi 2 * type type-population / sector-width!
+				sector-width sector-width-address write
+			else
+				sector-width!
+			then
+			sector-width / ceiling sector!	; Divide the angle by the sector width, and ceiling it for human-understandability.
 #end
