@@ -1,0 +1,19 @@
+#side Compartmentalization is Power
+	#author AgentE382 (Martin Simpkins, Jr.)
+	#date 27 July 2014
+	#seed 3 1 2
+	
+	#code ; common routines, consts, vars, & vectors
+	
+	#type E-Man ; siphon gatherer
+		#hardware
+		#code
+	
+	#type A-Man ; active defender
+		#hardware
+		#code
+	
+	#type G-Man ; colony
+		#hardware
+		#code
+#end
