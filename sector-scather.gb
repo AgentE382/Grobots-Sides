@@ -9,8 +9,11 @@
 		#const control-channel 1
 		
 		; Messages
-		#const sector-check 1
-		#const sector-taken 2
+		#const fresh-blood 1
+		#const sector-check 2
+		#const sector-taken 3
+		
+		#const bcast 99999
 		
 		; Shared Memory
 		#const origin-shared-memory-address 999
@@ -39,42 +42,76 @@
 		return
 		
 		get-sector-width:	; -- 	Gets sector width from shared memory.
-			sector-width sector-width-shared-memory-start-address type - read sector-width!	; Get the sector width from shared memory and set the variable.
+			sector-width-shared-memory-start-address type - read sector-width!	; Get the sector width from shared memory and set the variable.
 		return
 		
 		send-location:	; -- 	Puts position in shared memory.
-			position 2 control-channel send	; Put my position in shared memory based on my id.
+			position fresh-blood bcast 4 control-channel send	; Put my position in shared memory based on my id.
 		return
 			
 		check-sector:
-			id sector sector-check 3 control-channel send
+			id sector sector-check bcast 4 control-channel send
 			sync
 		return
 		
 	#type Starter
 	#decoration F60 triangle
 	#hardware
-			processor 1
+			processor 50
 			engine .125
 			solar-cells .125
+			constructor .125
+			food-sensor 18 1
+			eater .125
+			energy 500 50
 	#code
 		set-origin:
 			type type-population 1 > if	; Check if there are other robots of this type.
 				sync
-				type type-population
 				do control-channel receive while	; Check if a valid vector was at the shared memory location. If not, stop looping.
-					origin v+ origin!	; Add shared memory value to variable.
+					drop
+					fresh-blood = if
+						origin v+ origin!	; Add shared memory value to variable.
+					then
 				loop
-				origin rot ceiling vs/ origin!	; Divide the total by the amount of times looped, producing the average and update the variable.
+				origin type type-population vs/ origin!	; Divide the total by the amount of times looped, producing the average and update the variable.
 			else
 				position origin!	; Origin is my position.
 			then
 			origin origin-shared-memory-address vwrite	; Update the shared memory.
 		return
 		
+		sector-check-handler:
+			sector = if
+				dup id > if
+					sector-taken swap 2 control-channel send
+				else
+					drop
+				then
+			else
+				drop
+			then
+		return
+		
+		sector-taken-handler:
+			sector 1 + sector!
+			sector type type-population > if
+				sector type type-population - sector!
+			then
+			check-sector
+		return
+		
+		fresh-blood-handler:
+			get-sector-width
+			check-sector
+		return
+		
 		#start
+		1 constructor-type!
+		constructor-max-rate constructor-rate!
 		send-location
-		get-origin origin rect-to-polar drop nif
+		get-origin
+		origin or nif
 			set-origin
 		then
 		set-sector-width
@@ -83,30 +120,25 @@
 		
 		do
 			do control-channel receive while
-				dup sector-check = if
-					drop
-					dup sector = if
+				dup id = swap bcast = or if
+					dup sector-check = if
+						drop sector-check-handler
+					else dup sector-taken = if
+						drop sector-taken-handler
+					celse dup fresh-blood = if
+						drop fresh-blood-handler
+					celse
 						drop
-						dup id > if
-							sector-taken 2 control-channel send
-						else
-							drop
-						then
-					else
-						2drop
-					then
-				else
-					sector-taken = if
-						id = if
-							sector 1 + sector!
-							sector type type-population > if
-								sector type type-population - sector!
-							then
-							check-sector
-						then
 					then
 				then
 			loop
-			type type-population 2 / sector-width sector * sector-width 2 / - polar-to-rect origin v+ seek-location
+
+			food-collision nif
+;				type type-population 2 / sector-width sector * sector-width 2 / - polar-to-rect origin v+ seek-location
+				30 periodic-food-sensor drop
+				food-position seek-location
+			else
+				0 0 engine-velocity!
+			then
 		forever
 #end

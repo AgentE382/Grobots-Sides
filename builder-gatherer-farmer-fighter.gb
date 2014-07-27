@@ -1,0 +1,104 @@
+#side BuildGatherFarmFight!
+	#author AgentE382
+	#date 5-14-2013
+	#seed 1 2 3 4
+	#color 000
+	
+	#code
+		#const builder-channel 1
+		#const fighter-channel 2
+		#const need-energy 1
+		
+		move-into-range:	; x y dist -- flag	Seeks location, returns true when within range.
+			rrot 2dup seek-location
+			position dist > if
+				0
+			else
+				1
+			then
+		return
+		
+		move-to:	; x y -- flag	Seeks location, returns true when within range.
+			seek-location
+			collision food-collision or wall-collision or if
+				1
+			else
+				0
+			then
+		return
+		
+	#type Builder
+	#decoration FFF circle
+	#hardware
+		
+	#code
+		
+		#start
+			do
+	#type Gatherer
+	#decoration FFF circle
+	#hardware
+		processor 25
+		engine .0625
+		energy 500 50
+		eater 5
+		syphon 5 3.5
+		food-sensor 12.14213562373095 1
+	#code
+		#vector distressed-location
+		#vector food-location
+		
+		#start
+
+			do
+				builder-channel receive dup if
+					swap need-energy = if
+						drop distressed-location!
+					else
+						dropn
+					then
+				else
+					dropn
+					fighter-channel receive dup if
+						swap need-energy = if
+							drop distressed-location!
+						else
+							dropn
+						then
+					else
+						dropn
+					then
+				then
+				
+				energy 475 > if
+					do distressed-location syphon-range move-into-range until
+						sync
+					loop
+					; syphon energy, determine when finished...
+					0 0 distressed-location!
+				else
+					food-collision nif
+						fire-food-sensor
+						do food-position move-to until
+							sync
+						loop
+					then
+				then
+			forever
+	#type Farmer
+	#decoration FFF circle
+	#hardware
+		
+	#code
+		
+		#start
+			
+	#type Fighter
+	#decoration FFF circle
+	#hardware
+		
+	#code
+		
+		#start
+			
+#end
