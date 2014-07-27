@@ -7,6 +7,13 @@
 	
 	#type E-Man ; siphon gatherer
 		#hardware
+			engine .125
+			syphon 5 1
+			eater 3
+			food-sensor 8 1
+			armor 50
+			energy 3000 25
+			processor 40
 		#code
 	
 	#type A-Man ; active defender
