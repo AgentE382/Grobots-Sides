@@ -33,7 +33,7 @@
 			enemy-collision shot-collision or if
 				position help-me 3 fighter-channel send
 			then
-			friendly-collision 1 close-to-target^ and if
+			friendly-collision 1 close-to-target^ and wall-collision or if
 				choose-random^
 			then
 		return
