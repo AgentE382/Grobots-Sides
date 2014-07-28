@@ -19,18 +19,25 @@
 			processor 40
 		#code
 
+		#var overall 0
+
 		do
 			enemy-collision if
 				position help-me 3 fighter-channel send
 			then
+			friendly-collision if
+				1 overall!
+			then
 			food-collision if
-				friendly-collision if
-					8 periodic-food-sensor drop
-					food-position-overall seek-location
-				then
+				0 overall!
 			else
 				8 periodic-food-sensor drop
-				food-position seek-location
+				overall if
+					food-position-overall
+				else
+					food-position
+				then
+				seek-location
 			then
 		forever
 
