@@ -26,20 +26,20 @@
 		return
 		
 		close-to-target:
-			position move-target dist .25 <
+			position move-target dist swap <
 		return
 		
 		check-stuff:
 			enemy-collision shot-collision or if
 				position help-me 3 fighter-channel send
 			then
-			friendly-collision close-to-target^ and if
+			friendly-collision 1 close-to-target^ and if
 				choose-random^
 			then
 		return
 		
 		move-to:
-			do close-to-target^ until
+			do .25 close-to-target^ until
 				check-stuff^
 				move-target seek-location
 			loop
