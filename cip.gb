@@ -23,8 +23,8 @@
 			10 random-angle polar-to-rect position v+
 		return
 		
-		close-to-target: ; distance -- flag
-			position move-target dist swap <
+		close-to-target: ; target (vector) distance -- flag
+			rrot position dist swap <
 		return
 		
 		check-stuff:
