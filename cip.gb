@@ -26,7 +26,11 @@
 				position help-me 3 fighter-channel send
 			then
 			friendly-collision if
-				1 overall!
+				overall if
+					0 overall!
+				else
+					1 overall!
+				then
 			then
 			food-collision if
 				0 overall!
