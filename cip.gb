@@ -30,7 +30,7 @@
 				0 scanning!
 				0 9 random random-angle polar-to-rect move-target!
 			then
-			food-collision position move-target - abs 1 <= if
+			food-collision position move-target v- rect-to-polar drop 1 <= if
 				1 scanning!
 			else
 				scanning if
