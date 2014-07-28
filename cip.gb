@@ -21,9 +21,16 @@
 
 		#vector move-target
 		
+		choose-random:
+			0 9 random random-angle polar-to-rect position v+ move-target!
+		return
+		
 		check-stuff:
 			enemy-collision shot-collision or if
 				position help-me 3 fighter-channel send
+			then
+			friendly-collision if
+				choose-random^
 			then
 		return
 		
@@ -34,10 +41,6 @@
 			loop
 		return
 		
-		choose-random:
-			0 9 random random-angle polar-to-rect position v+ move-target!
-		return
-		
 		move-random:
 			choose-random^
 			move-to^
@@ -46,9 +49,6 @@
 		#start
 		
 		do
-			friendly-collision if
-				move-random^
-			then
 			food-collision nif
 				fire-food-sensor
 				food-found 0 > if
