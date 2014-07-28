@@ -22,7 +22,7 @@
 		#vector move-target
 		
 		check-stuff:
-			enemy-collision shot-collision if
+			enemy-collision shot-collision or if
 				position help-me 3 fighter-channel send
 			then
 		return
