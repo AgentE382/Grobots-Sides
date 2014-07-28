@@ -19,27 +19,25 @@
 			processor 40
 		#code
 
-		#var overall 0
+		#var scanning 1
+		#vector move-target
 
 		do
 			enemy-collision if
 				position help-me 3 fighter-channel send
 			then
 			friendly-collision if
-				overall if
-					0 overall!
-				else
-					1 overall!
-				then
+				0 scanning!
+				0 9 random random-angle polar-to-rect move-target!
 			then
-			food-collision if
-				0 overall!
+			food-collision position move-target - abs 1 <= if
+				1 scanning!
 			else
-				8 periodic-food-sensor drop
-				overall if
-					food-position-overall
-				else
+				scanning if
+					8 periodic-food-sensor drop
 					food-position
+				else
+					move-target
 				then
 				seek-location
 			then
