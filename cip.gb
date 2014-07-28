@@ -2,9 +2,12 @@
 	#author AgentE382 (Martin Simpkins, Jr.)
 	#date 27 July 2014
 	#seed 3 1 2
-	
+
 	#code ; common routines, consts, vars, & vectors
-	
+		
+		#const fighter-channel 2
+		#const help-me 1
+
 	#type E-Man ; siphon gatherer
 		#hardware
 			engine .125
@@ -15,7 +18,22 @@
 			energy 3000 25
 			processor 40
 		#code
-	
+
+		do
+			enemy-collision if
+				position help-me 3 fighter-channel send
+			then
+			food-collision if
+				friendly-collision if
+					8 periodic-food-sensor drop
+					food-position-overall seek-location
+				then
+			else
+				8 periodic-food-sensor drop
+				food-position seek-location
+			then
+		forever
+
 	#type A-Man ; active defender
 		#hardware
 		#code
