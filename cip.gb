@@ -18,14 +18,12 @@
 			energy 3000 25
 			processor 40
 		#code
-
-		#vector move-target
 		
-		choose-random:
-			10 random-angle polar-to-rect position v+ move-target!
+		choose-random: ; -- random_location (vector)
+			10 random-angle polar-to-rect position v+
 		return
 		
-		close-to-target:
+		close-to-target: ; distance -- flag
 			position move-target dist swap <
 		return
 		
@@ -33,21 +31,23 @@
 			enemy-collision shot-collision or if
 				position help-me 3 fighter-channel send
 			then
-			friendly-collision 1 close-to-target^ and wall-collision or if
+			friendly-collision 1 close-to-target^ and wall-collision or stack 2 >= and if
+				2drop
 				choose-random^
 			then
 		return
 		
-		move-to:
+		move-to: ; destination (vector) -- 
 			do .25 close-to-target^ until
+				2dup
 				check-stuff^
-				move-target seek-location
+				seek-location
 			loop
+			2drop
 		return
 		
 		move-random:
-			choose-random^
-			move-to^
+			choose-random^ move-to^
 		return
 
 		#start
@@ -56,7 +56,7 @@
 			food-collision nif
 				fire-food-sensor
 				food-found 0 > if
-					food-position move-target!
+					food-position
 				else
 					choose-random^
 				then
