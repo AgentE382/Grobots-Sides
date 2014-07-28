@@ -22,7 +22,7 @@
 		#vector move-target
 		
 		choose-random:
-			0 9 random random-angle polar-to-rect position v+ move-target!
+			10 random-angle polar-to-rect position v+ move-target!
 		return
 		
 		close-to-target:
