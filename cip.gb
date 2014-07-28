@@ -38,8 +38,7 @@
 		return
 		
 		move-to: ; destination (vector) -- 
-			do .25 close-to-target^ until
-				2dup
+			do 2dup .25 close-to-target^ until
 				check-stuff^
 				seek-location
 			loop
