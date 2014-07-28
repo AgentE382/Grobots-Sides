@@ -25,17 +25,21 @@
 			0 9 random random-angle polar-to-rect position v+ move-target!
 		return
 		
+		close-to-target:
+			position move-target dist .25 <
+		return
+		
 		check-stuff:
 			enemy-collision shot-collision or if
 				position help-me 3 fighter-channel send
 			then
-			friendly-collision if
+			friendly-collision close-to-target^ and if
 				choose-random^
 			then
 		return
 		
 		move-to:
-			do position move-target dist .25 < until
+			do close-to-target^ until
 				check-stuff^
 				move-target seek-location
 			loop
