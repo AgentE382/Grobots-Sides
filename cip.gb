@@ -43,6 +43,8 @@
 			move-to^
 		return
 
+		#start
+		
 		do
 			friendly-collision if
 				move-random^
