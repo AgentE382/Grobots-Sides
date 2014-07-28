@@ -28,7 +28,7 @@
 		return
 		
 		move-to:
-			do position move-target dist 0 = until
+			do position move-target dist .25 < until
 				check-stuff^
 				move-target seek-location
 			loop
