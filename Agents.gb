@@ -1,0 +1,44 @@
+;Check for shots.
+;Shots - Jink move away.
+;No shots - Check for food.
+;On food - Stay here.
+;Near food - Move to food.
+;No food - Move in random direction.
+
+#side Agents
+#author AgentE382
+#date 31 January 2015
+
+#type Gatherer
+#hardware
+	processor 10
+	engine .25
+	energy 1000 50
+	eater 2
+	food-sensor 10
+	shot-sensor 10
+	armor 50
+	constructor 2
+
+#code
+do
+	fire-shot-sensor
+	shot-found if
+		jink-move^
+	else
+		food-collision nif
+			10 periodic-food-sensor drop
+			food-found if
+				food-position seek-location
+			else
+				
+			then
+		then
+	then
+forever
+
+jink-move:
+
+return
+
+#end
