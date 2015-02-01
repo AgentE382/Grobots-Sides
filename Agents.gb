@@ -24,7 +24,7 @@
 do
 	10 periodic-shot-sensor drop
 	shot-found if
-		jink-move^
+		shot-velocity jink-move^
 	else
 		food-collision if
 			autoconstruct
@@ -41,7 +41,8 @@ do
 forever
 
 jink-move:
-
+	rect-to-polar pi/2 negate pi/2 random + polar-to-rect engine-velocity!
+	engine-max-power engine-power!
 return
 
 #end
