@@ -26,7 +26,9 @@ do
 	shot-found if
 		shot-velocity jink-move^
 	else
-		friendly-collision if random-move^
+		friendly-collision if
+			random-move^
+		then
 		food-collision if
 			autoconstruct
 		else
@@ -34,7 +36,7 @@ do
 			food-found if
 				food-position seek-location
 			else
-				random-move^
+				random-directed-move^
 			then
 		then
 	then
@@ -46,6 +48,11 @@ jink-move:
 return
 
 random-move:
+	1 random-angle polar-to-rect engine-velocity!
+	engine-max-power engine-power!
+return
+
+random-directed-move:
 	velocity 1 random-angle polar-to-rect v+ engine-velocity!
 	engine-max-power engine-power!
 return
