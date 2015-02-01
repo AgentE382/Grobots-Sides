@@ -16,7 +16,7 @@
 	energy 1000 50
 	eater 2
 	food-sensor 10
-	shot-sensor 10
+	shot-sensor 5
 	armor 50
 	constructor 2
 
