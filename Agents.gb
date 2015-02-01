@@ -33,7 +33,8 @@ do
 			food-found if
 				food-position seek-location
 			else
-				
+				velocity 1 random-angle polar-to-rect v+ engine-velocity!
+				engine-max-power engine-power!
 			then
 		then
 	then
