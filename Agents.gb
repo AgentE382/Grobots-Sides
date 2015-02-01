@@ -22,7 +22,7 @@
 
 #code
 do
-	fire-shot-sensor
+	10 periodic-shot-sensor drop
 	shot-found if
 		jink-move^
 	else
