@@ -21,23 +21,37 @@
 	constructor 2
 
 #code
+#var pulse-fired 0
 do
-	10 periodic-shot-sensor drop
-	shot-found if
-		shot-velocity jink-move^
-	else
-		friendly-collision if
-			random-move^
-		then
-		food-collision if
-			autoconstruct
+	energy 75 > if
+		10 periodic-shot-sensor drop
+		shot-found if
+			shot-velocity jink-move^
 		else
-			10 periodic-food-sensor drop
+			friendly-collision if
+				random-move^
+			then
+			food-collision if
+				autoconstruct
+			else
+				10 periodic-food-sensor drop
+				food-found if
+					food-position seek-location
+				else
+					random-directed-move^
+				then
+			then
+		then
+	else
+		pulse-fired if
+			25 periodic-food-sensor drop
 			food-found if
 				food-position seek-location
-			else
-				random-directed-move^
 			then
+		else
+			0 constructor-rate!
+			random-move^
+			1 pulse-fired!
 		then
 	then
 forever
